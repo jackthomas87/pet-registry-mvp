@@ -1,0 +1,68 @@
+// Prisma Schema for Pet Registry MVP
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Owner {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  pets                Pet[]
+  transfersAsOldOwner TransferOfOwnership[] @relation("OldOwner")
+  transfersAsNewOwner TransferOfOwnership[] @relation("NewOwner")
+
+  @@map("owners")
+}
+
+model Pet {
+  id          String    @id @default(uuid())
+  microchipId String    @unique
+  name        String
+  species     String
+  breed       String?
+  color       String?
+  birthdate   DateTime?
+  isLost      Boolean   @default(false)
+  ledgerHash  String?
+  ownerId     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  owner     Owner                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  transfers TransferOfOwnership[]
+
+  @@index([microchipId])
+  @@index([ownerId])
+  @@map("pets")
+}
+
+model TransferOfOwnership {
+  id           String   @id @default(uuid())
+  petId        String
+  oldOwnerId   String
+  newOwnerId   String
+  transferDate DateTime @default(now())
+  ledgerHash   String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  pet      Pet   @relation(fields: [petId], references: [id], onDelete: Cascade)
+  oldOwner Owner @relation("OldOwner", fields: [oldOwnerId], references: [id])
+  newOwner Owner @relation("NewOwner", fields: [newOwnerId], references: [id])
+
+  @@index([petId])
+  @@map("transfers_of_ownership")
+}
