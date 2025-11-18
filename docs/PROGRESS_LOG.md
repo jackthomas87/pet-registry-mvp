@@ -458,13 +458,82 @@
 - Complete audit trail of all ownership changes
 - Public verification via HashScan explorer
 
-### 🚨 Blockers/Notes
+---
 
-- ✅ ~~Database credentials needed~~ **RESOLVED**
-- ✅ ~~API routes needed~~ **RESOLVED**
-- ✅ ~~Frontend needs to be built~~ **RESOLVED**
-- ✅ ~~Hedera account needed~~ **RESOLVED**
-- ✅ ~~Ownership transfer endpoint~~ **RESOLVED: Fully implemented with blockchain verification**
+## Session 1 (Continued) - Authentication Foundation (In Progress)
+
+**Date:** November 17, 2024
+
+### ✅ Completed Tasks
+
+#### Database Schema Updates
+- ✅ Added NextAuth.js models to Prisma schema:
+  - User model (id, email, name, emailVerified, timestamps)
+  - Account model (for OAuth providers - prepared for future)
+  - Session model (for session management)
+  - VerificationToken model (for magic links)
+- ✅ Added userId to Owner model (optional foreign key)
+- ✅ Added userId to Pet model (optional foreign key)
+- ✅ Migration created: `add_auth_models`
+
+#### Frontend Authentication Setup
+- ✅ Installed NextAuth.js v5 (beta) with dependencies
+- ✅ Installed Prisma adapter for NextAuth
+- ✅ Created NextAuth configuration (`src/lib/auth.ts`)
+  - Email provider with magic link
+  - Prisma adapter integration
+  - Custom pages configuration
+  - Session callback with user ID
+
+- ✅ Created AuthProvider component
+  - SessionProvider wrapper
+  - Client-side component
+
+- ✅ Created Sign-In page (`/auth/signin`)
+  - Email input form
+  - Magic link request
+  - Success confirmation message
+  - Professional styling
+
+- ✅ Updated root layout
+  - Wrapped app in AuthProvider
+  - Added "Sign In" link to navigation
+
+#### Configuration Files
+- ✅ Created `AUTH_SETUP_COMMANDS.md` with installation instructions
+- ✅ Frontend environment variables configured (`.env.local`)
+  - NEXTAUTH_URL
+  - NEXTAUTH_SECRET (generated)
+  - DATABASE_URL
+  - EMAIL_FROM
+
+### 📦 Files Created/Modified
+- backend/prisma/schema.prisma (modified - added auth models)
+- backend/prisma/migrations/[timestamp]_add_auth_models/ (created)
+- frontend/src/lib/auth.ts (created)
+- frontend/src/components/AuthProvider.tsx (created)
+- frontend/src/app/auth/signin/page.tsx (created)
+- frontend/src/app/api/auth/[...nextauth]/route.ts (created)
+- frontend/src/app/layout.tsx (modified - added AuthProvider)
+- frontend/.env.local (created)
+- frontend/package.json (modified - added next-auth, adapters)
+- AUTH_SETUP_COMMANDS.md (created)
+
+### ⏳ Pending Tasks (Next Session)
+- [ ] Test magic link sign-in flow
+- [ ] Show logged-in user info in header
+- [ ] Add logout functionality
+- [ ] Protect register page (require authentication)
+- [ ] Update backend endpoints to require authentication
+- [ ] Link pet registrations to authenticated users
+- [ ] Set up real email service (SendGrid/Resend)
+- [ ] Add user dashboard
+
+### 🚨 Notes
+- Magic links currently log to console (no email service yet)
+- Authentication foundation is complete
+- Ready to add protected routes in next session
+- Database schema supports full auth system
 
 ### 📊 Overall Progress
 

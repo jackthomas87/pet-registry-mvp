@@ -5,15 +5,26 @@
 - /frontend → Next.js app (TypeScript)
 - /docs → project documentation
 
+## Authentication
+- Authentication will use NextAuth.js (Auth.js) with an Email provider (magic link)
+- PrismaAdapter will persist user sessions and accounts in PostgreSQL
+- Only authenticated users may register or manage their pets
+- Pet lookup remains public and returns only limited, non-sensitive owner info
+
 ## Data Model (high level)
+### User
+- id (uuid)
+- email (unique)
+- name (optional)
+- createdAt
+- updatedAt
+
 ### Owner
 - id (uuid)
 - name
-- email
-- phone
-- address
 - createdAt
 - updatedAt
+- userId (fk → User.id)
 
 ### Pet
 - id (uuid)
@@ -23,7 +34,8 @@
 - breed
 - color
 - birthdate (optional)
-- ownerId (fk)
+- ownerId (fk → Owner.id)
+- userId (fk → User.id)
 - isLost (boolean)
 - ledgerHash (string)
 - createdAt
@@ -32,8 +44,8 @@
 ### TransferOfOwnership
 - id (uuid)
 - petId (fk)
-- oldOwnerId (fk)
-- newOwnerId (fk)
+- oldOwnerId (fk → User.id)
+- newOwnerId (fk → User.id)
 - transferDate
 - ledgerHash (string)
 
